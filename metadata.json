@@ -1,0 +1,6 @@
+{
+  "name": "KiMO 3D Studio",
+  "description": "Centro de Operaciones, Taller 3D, Cotizador Activo y Gestión de Filamentos para Laboratorio de Fabricación Aditiva",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

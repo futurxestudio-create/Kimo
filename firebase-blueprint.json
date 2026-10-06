@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "Order": {
+      "title": "Order",
+      "description": "3D printing or fabrication order in workshop",
+      "type": "object",
+      "properties": {
+        "folio": { "type": "string", "maxLength": 50 },
+        "clientName": { "type": "string", "maxLength": 100 },
+        "title": { "type": "string", "maxLength": 150 },
+        "status": { "type": "string", "enum": ["queue", "manufacturing", "postprocess", "logistics", "delivered"] },
+        "assignedPrinter": { "type": "string", "maxLength": 50 },
+        "progress": { "type": "number" },
+        "filamentGrams": { "type": "number" },
+        "printHours": { "type": "number" },
+        "totalPrice": { "type": "number" },
+        "pendingBalance": { "type": "number" },
+        "isPaid": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["folio", "clientName", "title", "status"]
+    },
+    "Filament": {
+      "title": "Filament",
+      "description": "Filament spool stored in workshop rack or AMS",
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string", "maxLength": 50 },
+        "name": { "type": "string", "maxLength": 100 },
+        "material": { "type": "string", "maxLength": 50 },
+        "color": { "type": "string", "maxLength": 50 },
+        "colorHex": { "type": "string", "maxLength": 20 },
+        "gramsRemaining": { "type": "number" },
+        "capacityGrams": { "type": "number" },
+        "costPerGram": { "type": "number" },
+        "spoolTareGrams": { "type": "number" },
+        "amsSlot": { "type": "string", "maxLength": 20 },
+        "status": { "type": "string", "enum": ["optimal", "critical", "calibrated"] }
+      },
+      "required": ["sku", "name", "material", "gramsRemaining"]
+    },
+    "FailureLog": {
+      "title": "FailureLog",
+      "description": "Audit record of print failure or purged scrap material",
+      "type": "object",
+      "properties": {
+        "orderFolio": { "type": "string", "maxLength": 50 },
+        "itemTitle": { "type": "string", "maxLength": 100 },
+        "cause": { "type": "string", "maxLength": 100 },
+        "gramsLost": { "type": "number" },
+        "costAbsorbed": { "type": "number" },
+        "actionTaken": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["orderFolio", "cause", "gramsLost", "costAbsorbed"]
+    },
+    "Quotation": {
+      "title": "Quotation",
+      "description": "Saved quotation with multi-model data, BOM supplies, finishes, and margins",
+      "type": "object",
+      "properties": {
+        "folio": { "type": "string", "maxLength": 50 },
+        "clientName": { "type": "string", "maxLength": 100 },
+        "projectName": { "type": "string", "maxLength": 150 },
+        "status": { "type": "string", "enum": ["Borrador", "Enviada", "Enviada a Taller", "En Producción"] },
+        "subtotal": { "type": "number" },
+        "total": { "type": "number" },
+        "totalHours": { "type": "number" },
+        "totalPieces": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["folio", "clientName", "status"]
+    },
+    "Supply": {
+      "title": "Supply",
+      "description": "Warehouse supply, fastener, electronic module or packaging component",
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string", "maxLength": 50 },
+        "name": { "type": "string", "maxLength": 100 },
+        "category": { "type": "string", "maxLength": 50 },
+        "stock": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 30 },
+        "cost": { "type": "number" },
+        "supplier": { "type": "string", "maxLength": 100 },
+        "purchaseUrl": { "type": "string", "maxLength": 300 }
+      },
+      "required": ["sku", "name", "category", "stock", "cost"]
+    }
+  },
+  "firestore": {
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Workshop production orders"
+    },
+    "/quotations/{quotationId}": {
+      "schema": { "$ref": "#/entities/Quotation" },
+      "description": "Saved quotations registry"
+    },
+    "/filaments/{filamentId}": {
+      "schema": { "$ref": "#/entities/Filament" },
+      "description": "Filament spools in digital rack"
+    },
+    "/supplies/{supplyId}": {
+      "schema": { "$ref": "#/entities/Supply" },
+      "description": "Warehouse supplies and hardware inventory"
+    },
+    "/failures/{failureId}": {
+      "schema": { "$ref": "#/entities/FailureLog" },
+      "description": "Print failure audit logs"
+    }
+  }
+}
